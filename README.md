@@ -1,50 +1,40 @@
-Library Management System
+# Library Management System
 
-Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+## Overview
+
 This project implements a Library Management System in C++ using object-oriented programming principles. It allows users to manage books and student records efficiently.
 
-Features
-Register Student: Allows registration of new students with roll number, name, and password.
-View Books: Displays all available books in the library.
-Issue Book: Enables students to borrow books from the library.
-Return Book: Facilitates the return of borrowed books.
-Search Book: Allows searching for books by title.
-Delete Book: Admin feature to delete a book from the library.
-Display Issued Books: Shows books currently issued to students.
-File Structure
-css
-Copy code
-LibraryManagementSystem/
-├── Book.h
-├── Book.cpp
-├── Student.h
-├── Student.cpp
-├── Library.h
-├── Library.cpp
-├── main.cpp
-├── books.txt
-└── students.txt
-How to Use
-Clone the repository:
+## Features
 
-bash
-Copy code
-git clone https://github.com/your-username/LibraryManagementSystem.git
-Compile the code:
+- **Register Student**: Allows registration of new students with roll number, name, and password.
+- **View Books**: Displays all available books in the library.
+- **Issue Book**: Enables students to borrow books from the library.
+- **Return Book**: Facilitates the return of borrowed books.
+- **Search Book**: Allows searching for books by title.
+- **Delete Book**: Admin feature to delete a book from the library.
+- **Display Issued Books**: Shows books currently issued to students.
 
-css
-Copy code
+
+## How to Use
+
+1. **Clone the repository:**
+git clone https://github.com/architdhakar/Library-Management-System
+
+2. **Compile the code:**
 g++ -o library_system main.cpp Library.cpp Book.cpp Student.cpp
-Run the program:
-
-bash
-Copy code
+3. **Run the program:**
 ./library_system
-Contributing
+## Contributing
+
 Contributions are welcome! Fork the repository and submit a pull request with your enhancements.
 
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
 
-Author
-Your Name
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+Archit Dhakar  
+
