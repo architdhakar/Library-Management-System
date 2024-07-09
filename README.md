@@ -1,6 +1,6 @@
 # Library Management System
-![C++ Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/200px-ISO_C%2B%2B_Logo.svg.png)
-![OOP Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Object-Oriented_Programming_%28multilanguage%29.svg/220px-Object-Oriented_Programming_%28multilanguage%29.svg.png)
+![C++ Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/20px-ISO_C%2B%2B_Logo.svg.png)
+![OOP Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Object-Oriented_Programming_%28multilanguage%29.svg/20px-Object-Oriented_Programming_%28multilanguage%29.svg.png)
 
 
 ## Overview
