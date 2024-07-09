@@ -1,4 +1,6 @@
 # Library Management System
+![C++ Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/200px-ISO_C%2B%2B_Logo.svg.png)
+![OOP Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Object-Oriented_Programming_%28multilanguage%29.svg/220px-Object-Oriented_Programming_%28multilanguage%29.svg.png)
 
 
 ## Overview
@@ -25,13 +27,6 @@ git clone https://github.com/architdhakar/Library-Management-System
 g++ -o library_system main.cpp Library.cpp Book.cpp Student.cpp
 3. **Run the program:**
 ./library_system
-## Contributing
-
-Contributions are welcome! Fork the repository and submit a pull request with your enhancements.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Author
 
