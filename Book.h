@@ -3,7 +3,6 @@
 
 #include <string>
 #include <iostream>
-
 using namespace std;
 
 class Book {
@@ -14,7 +13,7 @@ public:
     bool isIssued;
 
     Book();
-    Book(string id, string title, string category);
+    Book(string id, string title, string category, bool isIssued = false);
     void display() const;
 };
 

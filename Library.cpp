@@ -1,46 +1,8 @@
 #include "Library.h"
-#include <fstream>
-#include <sstream>
-#include <algorithm>
 #include <iostream>
 
-using namespace std;
-
-Library::Library() {
-    loadBooks();
-    loadStudents();
-}
-
-void Library::loadBooks() {
-    ifstream file("books.txt");
-    string line, id, title, category;
-    while (getline(file, line)) {
-        stringstream ss(line);
-        getline(ss, id, ',');
-        getline(ss, title, ',');
-        getline(ss, category, ',');
-        books.push_back(Book(id, title, category));
-    }
-    file.close();
-}
-
-void Library::loadStudents() {
-    ifstream file("students.txt");
-    string line, rollNumber, name, password;
-    while (getline(file, line)) {
-        stringstream ss(line);
-        getline(ss, rollNumber, ',');
-        getline(ss, name, ',');
-        getline(ss, password, ',');
-        students.push_back(Student(rollNumber, name, password));
-    }
-    file.close();
-}
-
-void Library::saveStudent(const Student& student) {
-    ofstream file("students.txt", ios::app);
-    file << student.rollNumber << "," << student.name << "," << student.password << endl;
-    file.close();
+Library::Library() : db("library.db") {
+    db.createTables();
 }
 
 void Library::registerStudent() {
@@ -52,16 +14,74 @@ void Library::registerStudent() {
     getline(cin, name);
     cout << "Enter Password: ";
     cin >> password;
-    Student student(rollNumber, name, password);
-    students.push_back(student);
-    saveStudent(student);
-    cout << "Student registered successfully!" << endl;
+
+    string sql = "INSERT INTO Students VALUES('" + rollNumber + "', '" + name + "', '" + password + "');";
+    if (db.execute(sql))
+        cout << "Student registered successfully!" << endl;
+}
+
+void Library::addBook() {
+    string id, title, category;
+    cout << "Enter Book ID: ";
+    cin >> id;
+    cout << "Enter Title: ";
+    cin.ignore();
+    getline(cin, title);
+    cout << "Enter Category: ";
+    getline(cin, category);
+
+    string sql = "INSERT INTO Books VALUES('" + id + "', '" + title + "', '" + category + "', 0);";
+    if (db.execute(sql))
+        cout << "Book added successfully!" << endl;
 }
 
 void Library::displayBooks() const {
-    for (const auto& book : books) {
-        book.display();
+    string sql = "SELECT id, title, category, isIssued FROM Books;";
+    sqlite3* dbHandle;
+    sqlite3_open("library.db", &dbHandle);
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(dbHandle, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            Book book(
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)),
+                sqlite3_column_int(stmt, 3)
+            );
+            book.display();
+        }
     }
+    sqlite3_finalize(stmt);
+    sqlite3_close(dbHandle);
+}
+
+void Library::searchBook() const {
+    string title;
+    cout << "Enter Book Title: ";
+    cin.ignore();
+    getline(cin, title);
+
+    string sql = "SELECT id, title, category, isIssued FROM Books WHERE title='" + title + "';";
+    sqlite3* dbHandle;
+    sqlite3_open("library.db", &dbHandle);
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(dbHandle, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            Book book(
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)),
+                sqlite3_column_int(stmt, 3)
+            );
+            book.display();
+        } else {
+            cout << "Book not found!" << endl;
+        }
+    }
+    sqlite3_finalize(stmt);
+    sqlite3_close(dbHandle);
 }
 
 void Library::issueBook() {
@@ -71,23 +91,23 @@ void Library::issueBook() {
     cout << "Enter Book ID: ";
     cin >> bookId;
 
-    auto student = find_if(students.begin(), students.end(), [&rollNumber](const Student& s) { return s.rollNumber == rollNumber; });
-    if (student != students.end()) {
-        auto book = find_if(books.begin(), books.end(), [&bookId](const Book& b) { return b.id == bookId; });
-        if (book != books.end()) {
-            if (!book->isIssued) {
-                book->isIssued = true;
-                student->issuedBooks.push_back(bookId);
-                cout << "Book issued successfully to " << student->name << endl;
-            } else {
-                cout << "Book is already issued!" << endl;
-            }
-        } else {
-            cout << "Book not found!" << endl;
-        }
-    } else {
-        cout << "Student not found!" << endl;
+    string sqlBook = "SELECT isIssued FROM Books WHERE id='" + bookId + "';";
+    int issued = db.getInt(sqlBook);
+
+    if (issued == -1) {
+        cout << "Book not found!" << endl;
+        return;
     }
+    if (issued == 1) {
+        cout << "Book already issued!" << endl;
+        return;
+    }
+
+    string sqlInsert = "INSERT INTO IssuedBooks VALUES('" + rollNumber + "', '" + bookId + "');";
+    string sqlUpdate = "UPDATE Books SET isIssued=1 WHERE id='" + bookId + "';";
+
+    if (db.execute(sqlInsert) && db.execute(sqlUpdate))
+        cout << "Book issued successfully!" << endl;
 }
 
 void Library::returnBook() {
@@ -97,36 +117,13 @@ void Library::returnBook() {
     cout << "Enter Book ID: ";
     cin >> bookId;
 
-    auto student = find_if(students.begin(), students.end(), [&rollNumber](const Student& s) { return s.rollNumber == rollNumber; });
-    if (student != students.end()) {
-        auto it = find(student->issuedBooks.begin(), student->issuedBooks.end(), bookId);
-        if (it != student->issuedBooks.end()) {
-            student->issuedBooks.erase(it);
-            auto book = find_if(books.begin(), books.end(), [&bookId](Book& b) { return b.id == bookId; });
-            if (book != books.end()) {
-                book->isIssued = false;
-                cout << "Book returned successfully!" << endl;
-            }
-        } else {
-            cout << "Book not issued to this student!" << endl;
-        }
-    } else {
-        cout << "Student not found!" << endl;
-    }
-}
+    string sqlDelete = "DELETE FROM IssuedBooks WHERE rollNumber='" + rollNumber + "' AND bookId='" + bookId + "';";
+    string sqlUpdate = "UPDATE Books SET isIssued=0 WHERE id='" + bookId + "';";
 
-void Library::searchBook() const {
-    string title;
-    cout << "Enter Book Title: ";
-    cin.ignore();
-    getline(cin, title);
-
-    auto book = find_if(books.begin(), books.end(), [&title](const Book& b) { return b.title == title; });
-    if (book != books.end()) {
-        book->display();
-    } else {
-        cout << "Book not found!" << endl;
-    }
+    if (db.execute(sqlDelete) && db.execute(sqlUpdate))
+        cout << "Book returned successfully!" << endl;
+    else
+        cout << "Failed to return book!" << endl;
 }
 
 void Library::deleteBook() {
@@ -134,19 +131,32 @@ void Library::deleteBook() {
     cout << "Enter Book ID to delete: ";
     cin >> bookId;
 
-    auto it = remove_if(books.begin(), books.end(), [&bookId](const Book& b) { return b.id == bookId; });
-    if (it != books.end()) {
-        books.erase(it, books.end());
+    string sql = "DELETE FROM Books WHERE id='" + bookId + "';";
+    if (db.execute(sql))
         cout << "Book deleted successfully!" << endl;
-    } else {
+    else
         cout << "Book not found!" << endl;
-    }
 }
 
 void Library::displayIssuedBooks() const {
-    for (const auto& book : books) {
-        if (book.isIssued) {
+    string sql = "SELECT Books.id, Books.title, Books.category, Books.isIssued "
+                 "FROM Books JOIN IssuedBooks ON Books.id = IssuedBooks.bookId;";
+
+    sqlite3* dbHandle;
+    sqlite3_open("library.db", &dbHandle);
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(dbHandle, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            Book book(
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)),
+                sqlite3_column_int(stmt, 3)
+            );
             book.display();
         }
     }
+    sqlite3_finalize(stmt);
+    sqlite3_close(dbHandle);
 }
