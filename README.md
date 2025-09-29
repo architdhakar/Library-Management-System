@@ -4,9 +4,9 @@ A complete Command Line Interface (CLI) application for managing a library, writ
 
 ---
 
-## ✨ Features
+##  Features
 
-### 👨‍💼 Admin System
+###  Admin System
 - **Secure Login**: Admins log in with a unique email and password.
 - **Admin Registration**: A logged-in admin can create new admin accounts.
 - **Book Management**:
@@ -19,7 +19,7 @@ A complete Command Line Interface (CLI) application for managing a library, writ
 - **Automated Notifications**:
   - Trigger a (simulated) email reminder for students whose books are due the next day.
 
-### 🧑‍🎓 Student System
+###  Student System
 - **Secure Login**: Students log in with their roll number and password.
 - **Student Registration**: New users can register for a student account from the main menu.
 - **Book Operations**:
@@ -30,12 +30,12 @@ A complete Command Line Interface (CLI) application for managing a library, writ
   - View personal history of all issued and returned books.
   - Check current outstanding fine amount.
 
-### 💸 Fine Calculation
+###  Fine Calculation
 - **Automatic Fines**: A fine of **₹2 per day** is automatically calculated and added to a student's account for each overdue book upon its return.
 
 ---
 
-## ⚙️ Technology Stack
+##  Technology Stack
 
 * **Backend**: C++ (17)
 * **Database**: SQLite3
@@ -44,7 +44,7 @@ A complete Command Line Interface (CLI) application for managing a library, writ
 
 ---
 
-## 🏗️ How to Build and Run
+##  How to Build and Run
 
 ### Prerequisites
 1.  **C++ Compiler**: A modern C++ compiler (like GCC, Clang, or MSVC) that supports C++17.
@@ -83,7 +83,7 @@ cd ..
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 ### Default Credentials
 * **Admin**:

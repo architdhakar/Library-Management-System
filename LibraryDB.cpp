@@ -341,7 +341,7 @@ bool LibraryDB::issueBook(int studentId, int bookId) {
     string issueSql = "INSERT INTO IssueRecords (book_id, student_id, issue_date, due_date) VALUES (?, ?, ?, ?);";
     if (sqlite3_prepare_v2(db, issueSql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
         string issueDate = getCurrentDate();
-        string dueDate = addDaysToDate(issueDate, 14);
+        string dueDate = addDaysToDate(issueDate, 1);
         sqlite3_bind_int(stmt, 1, bookId);
         sqlite3_bind_int(stmt, 2, studentId);
         sqlite3_bind_text(stmt, 3, issueDate.c_str(), -1, SQLITE_TRANSIENT);
