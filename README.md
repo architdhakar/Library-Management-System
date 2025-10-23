@@ -16,8 +16,7 @@ A complete Command Line Interface (CLI) application for managing a library, writ
 - **Student Oversight**:
   - View a list of all registered students and their outstanding fines.
   - Reset passwords for student accounts.
-- **Automated Notifications**:
-  - Trigger a (simulated) email reminder for students whose books are due the next day.
+
 
 ###  Student System
 - **Secure Login**: Students log in with their roll number and password.
