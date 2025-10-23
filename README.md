@@ -1,5 +1,6 @@
-# Library Management System
 
+# Library Management System
+## The following instructions are for Sprint 3
 A complete Command Line Interface (CLI) application for managing a library, written in C++ with an SQLite backend. This project demonstrates core Object-Oriented Programming (OOP) principles, database management, and a modular, user-friendly design.
 
 ---
