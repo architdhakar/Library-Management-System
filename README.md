@@ -99,7 +99,3 @@ cd ..
 
 ---
 
-### ⚠️ Important Notes
-
-* **Password Hashing**: The current implementation uses a simple XOR-based string obfuscation for demonstration purposes **only**. It is **NOT SECURE**. For a production environment, you must replace this with a strong hashing library like **Argon2** or **bcrypt**.
-* **Email Service**: The `EmailService` is a simulation that prints notifications to the console. To send real emails, you would need to integrate a C++ SMTP client library (e.g., `libcurl`, `SimpleMail`).
